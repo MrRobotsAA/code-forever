@@ -1,0 +1,14 @@
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <iostream>
+using namespace std;
+int main(){
+	double n;
+	int k;
+	scanf("%lf %d",&n,&k);
+	while(k--){
+		n/=2;
+	}
+	printf("%.3f\n",n);
+}

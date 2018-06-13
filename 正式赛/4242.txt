@@ -1,0 +1,74 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int inf = 0x3f3f3f3f;
+struct node
+{
+    int a,b,c;
+    bool operator < (const node& h)const
+    {
+        return a<h.a;
+    }
+}num[200000];
+int tree[800000];
+#define lson rt<<1
+#define rson rt*2+1
+void build(int rt,int l,int r)
+{
+    if(l==r)
+    {
+        tree[rt] = inf;
+        return ;
+    }
+    int mid = (l+r)>>1;
+    build(lson,l,mid);
+    build(rson,mid+1,r);
+    tree[rt] = min(tree[rt<<1],tree[rt<<1|1]);
+}
+void update(int rt,int l,int r,int pos,int v)
+{
+    if(l==r)
+    {
+        tree[rt]  = min(tree[rt],v);
+        return;
+    }
+    int mid = (l+r)>>1;
+    if(pos<=mid)update(lson,l,mid,pos,v);
+    else update(rson,mid+1,r,pos,v);
+    tree[rt] = min(tree[rt<<1],tree[rt<<1|1]);
+}
+int  query(int rt,int l,int r,int L,int R)
+{
+    if(L<=l&&r<=R)return tree[rt];
+    int mid = (l+r)>>1;
+   int ans = inf;
+    if(L<=mid)ans = min(ans,query(rt<<1,l,mid,L,R));
+    if(R>mid) ans = min(ans,query(rt<<1|1,mid+1,r,L,R));
+    return ans;
+}
+int main()
+{
+    int n;
+    while(cin>>n)
+    {
+        for(int i=1;i<=n;i++)
+        {
+            scanf("%d%d%d",&num[i].a,&num[i].b,&num[i].c);
+        }
+        sort(num+1,num+1+n);
+        build(1,1,n);
+        int ans =0 ;
+        for(int i=1;i<=n;i++)
+        {
+            long long h = query(1,1,n,1,num[i].b);
+            if(h>num[i].c)
+            {
+                ans++;
+            }
+           update(1,1,n,num[i].b,num[i].c);
+
+
+        }
+        cout<<ans<<endl;
+    }
+    return 0;
+}

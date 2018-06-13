@@ -1,0 +1,113 @@
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+const int TINF = 0x3f3f3f3f;
+const int MAXN = 100;
+
+struct data {
+	bool prov_only;
+	vector<int> ordered;
+} d[5];
+
+struct pack {
+	int type;
+	long long value_init;
+	long long value;
+	int expires_init;
+	int expires;
+} p[MAXN+3];
+
+char prov[21], prov_u[21], op[2];
+long long exceeded;
+int n, m, q;
+
+bool cmp(int a, int b) {
+	if(p[a].value != p[b].value) return p[a].value > p[b].value;
+	else return p[a].expires < p[b].expires;
+}
+
+int GetTimestamp(int dd, int hh, int mm) {
+	return dd*24*60 + hh*60 + mm;
+}
+
+bool IsExpired(int id, int dd, int hh, int mm) {
+	if(GetTimestamp(dd, hh, mm) >= p[id].expires)
+		return true;
+	return false;
+}
+
+bool Check(int id, int dd, int hh, int mm, char *prov_u) {
+	int type = p[id].type;
+	if(IsExpired(id, dd, hh, mm))
+		return false;
+	if(d[type].prov_only && strcmp(prov_u, prov))
+		return false;
+	return true;
+}
+
+int main(int argc, char const *argv[]) {
+	d[1].prov_only = true;
+	d[2].prov_only = false;
+	d[3].prov_only = true;
+	d[4].prov_only = false;
+	int value1, value2;
+	scanf("%s %d %d", prov, &value1, &value2);
+	value1 *= 1024*1024;
+	value2 *= 1024*1024;
+	scanf("%d", &n);
+	for(int i=1; i<=n; ++i) {
+		scanf("%d %lld %d", &p[i].type, &p[i].value_init, &p[i].expires_init);
+		p[i].value_init *= 1024*1024;
+		if(~p[i].expires_init)
+			p[i].expires_init *= 24*60;
+		d[p[i].type].ordered.push_back(i);
+	}
+	p[n+1] = {3, value1, value1, -1, TINF};
+	d[3].ordered.push_back(n+1);
+	p[n+2] = {4, value2, value2, -1, TINF};
+	d[4].ordered.push_back(n+2);
+	scanf("%d", &q);
+	while(q--) {
+		scanf("%s", op);
+		if(op[0] == 'U') {
+			int dd, hh, mm;
+			long long value;
+			scanf("%d-%d:%d %s %lld", &dd, &hh, &mm, prov_u, &value);
+			for(int i=1; i<=4 && value>0; ++i) {
+				sort(d[i].ordered.begin(), d[i].ordered.end(), cmp);
+				for(int j=0; j<d[i].ordered.size() && value>0; ++j) {
+					int id = d[i].ordered[j];
+					if(Check(id, dd, hh, mm, prov_u)) {
+						long long value_u = min(p[id].value, value);
+						p[id].value -= value_u;
+						value -= value_u;
+					}
+				}
+			}
+			if(value > 0) exceeded += value;
+		}
+		if(op[0] == 'B') {
+			int dd, hh, mm, id;
+			scanf("%d-%d:%d %d", &dd, &hh, &mm, &id);
+			if(IsExpired(id, dd, hh, mm))
+				p[id].value = 0;
+			p[id].value += p[id].value_init;
+			if(~p[id].expires_init)
+				p[id].expires = GetTimestamp(dd, hh, mm) + p[id].expires_init;
+			else p[id].expires = TINF;
+		}
+		if(op[0] == 'Q') {
+			int dd, hh, mm, id;
+			scanf("%d-%d:%d %d", &dd, &hh, &mm, &id);
+			if(IsExpired(id, dd, hh, mm))
+				p[id].value = 0;
+			if(id) printf("%.2f\n", 1.0*p[id].value/1024/1024);
+			else printf("%.2f %.2f %.2f\n", 1.0*p[n+1].value/1024/1024, 1.0*p[n+2].value/1024/1024, 1.0*exceeded/1024/1024);
+		}
+	}
+	
+	return 0;
+}

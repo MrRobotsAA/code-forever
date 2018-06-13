@@ -1,0 +1,16 @@
+#include <bits/stdc++.h>
+#define ll long long int
+const int inf=1e8;
+const int mod =1e9+7;
+using namespace std;
+int main()
+{
+    int n,L,R;
+    while(cin>>n>>R)
+    {
+        if(n%(1+R)==0)
+        printf("-1\n");
+        else printf("%d\n",n%(1+R));
+    }
+    return 0;
+}

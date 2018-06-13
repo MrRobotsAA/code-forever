@@ -1,0 +1,53 @@
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+using namespace std;
+typedef long long LL;
+char s[100000];
+LL e[20];
+LL stringToDigit(char *p){
+    LL ans = 0;
+    while(*p){
+        ans = ans * 10 + (*p++ - '0');
+    }
+    return ans;
+}
+LL stringToDigit(char *p, int len){
+    LL ans = 0;
+    while(*p && len--){
+        ans = ans * 10 + (*p++ - '0');
+    }
+    return ans;
+}
+int getWei(LL x){
+    int ans = 0;
+    while(x){
+        x /= 10;
+        ans++;
+    }
+    return ans;
+}
+LL getGCD(LL a, LL b){
+    return b ? getGCD(b, a % b) : a;
+}
+int main()
+{
+    //freopen("data.in", "r", stdin);
+    e[0] = 1;
+    for(int i=1;i<20;i++){
+        e[i] = e[i-1] * 10;
+    }
+    int p;
+    scanf("%s %d", s, &p);
+    int dot_index = strstr(s, ".") - s; //小数点位置
+    LL zhengshu = stringToDigit(s, dot_index); //整数部分
+    LL xiaoshu = stringToDigit(s + dot_index + 1); //小数部分
+    int q = getWei(xiaoshu);
+    LL fenzi = xiaoshu - stringToDigit(s + dot_index + 1, p-1);
+    LL fenmu = e[q] - e[p-1];
+    LL gcd = getGCD(fenzi, fenmu);
+    LL zuijianfenzi = fenzi / gcd;
+    LL zuijianfenmu = fenmu / gcd;
+    printf("%lld/%lld\n", zuijianfenzi + zuijianfenmu * zhengshu, zuijianfenmu);
+    return 0;
+}

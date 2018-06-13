@@ -1,0 +1,24 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<math.h>
+int main()
+{
+    int n,max,min,x,i;
+    while(~scanf("%d",&n))
+    {
+        max=0;
+        min=100;
+        for(i=0;i<n;i++)
+    {
+        scanf("%d",&x);
+        if(max<x)
+            max=x;
+
+        if(min>x)
+            min=x;
+        }
+         printf("%d\n",max-min);
+    }
+    return 0;
+}

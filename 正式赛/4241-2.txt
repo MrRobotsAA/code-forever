@@ -1,0 +1,91 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int MAXN = 10510;
+int g[200][MAXN];
+int a[MAXN];
+int b[MAXN];
+int linker[MAXN];
+bool used[MAXN];
+int vN,uN;
+bool dfs(int u)
+{
+    for(int v=1; v<=vN; v++)
+    {
+        if(g[u][v]&&!used[v])
+        {
+            used[v] =true;
+            if(linker[v]==-1||dfs(linker[v]))
+            {
+                linker[v] = u;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+int hungry()
+{
+    int res  = 0;
+    memset(linker,-1,sizeof linker);
+    for(int u=1; u<=uN; u++)
+    {
+        memset(used,0,sizeof used);
+        if(dfs(u))res++;
+    }
+    return res;
+}
+void addedge(int a,int b)
+{
+    g[a][b] = 1;
+
+}
+int main()
+{
+    int n;
+    cin>>n;
+    uN = n;
+    vN = 10200;
+    memset(g,0,sizeof g);
+    for(int i=1; i<=n; i++)
+    {
+        scanf("%d%d",&a[i],&b[i]);
+        addedge(i,a[i]+b[i]+200);
+        addedge(i,a[i]-b[i]+200);
+        addedge(i,a[i]*b[i]+200);
+        addedge(i,a[i]/b[i]+200);
+    }
+    int sum = hungry();
+
+    if(sum==n)
+    {
+        printf("menhera\n");
+        for(int i=1; i<=n; i++)
+        {
+            for(int j=1; j<=10200; j++)
+            {
+
+                if(linker[j]==i)
+                {
+                    if(a[i]+b[i]==j-200)
+                        printf("%d + %d = %d\n",a[i],b[i],a[i]+b[i]);
+                    else if(a[i]*b[i]==j-200)
+                        printf("%d * %d = %d\n",a[i],b[i],a[i]*b[i]);
+                    else if(a[i]-b[i]==j-200)
+                        printf("%d - %d = %d\n",a[i],b[i],a[i]-b[i]);
+                    else
+                    {
+                        printf("%d / %d = %d\n",a[i],b[i],a[i]/b[i]);
+                    }
+                }
+            }
+        }
+    }
+    else printf("QAQ\n");
+
+}
+/*
+3
+1 3
+2 4
+5 7
+*/

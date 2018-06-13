@@ -1,0 +1,147 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int MAXN = 100 + 5;
+const int inf = 1e9;
+int n;
+int st, ed;
+//dinic模版
+struct node
+{
+    int u, v, f;
+    int next;
+} edge[MAXN * 18];
+int head[MAXN*5];
+int cnt;
+void add(int u, int v, int f)
+{
+    edge[cnt].u = u;
+    edge[cnt].v = v;
+    edge[cnt].f = f;
+    edge[cnt].next = head[u];
+    head[u] = cnt++;
+    edge[cnt].u = v;
+    edge[cnt].v = u;
+    edge[cnt].f = 0;
+    edge[cnt].next = head[v];
+    head[v] = cnt++;
+}
+int dis[MAXN*5];
+int bfs(int s, int t)
+{
+    int u, v ;
+    memset(dis, -1, sizeof(dis));
+    dis[s] = 0 ;
+    queue<int>q;
+    q.push(s) ;
+    while(!q.empty())
+    {
+        u = q.front();
+        q.pop();
+        for(int i = head[u] ; i != -1 ; i = edge[i].next)
+        {
+            v = edge[i].v ;
+            if(dis[v] == -1 && edge[i].f)
+            {
+                dis[v] = dis[u] + 1 ;
+                q.push(v) ;
+            }
+        }
+    }
+    if(dis[t] > 0)
+        return 1 ;
+    return 0 ;
+}
+int dfs(int s, int t, int min1)
+{
+    if(s == t)
+        return min1 ;
+    int  flow, ans = 0 ;
+    for(int i = head[s] ; i != -1 ; i = edge[i].next)
+    {
+        int v = edge[i].v ;
+        if(dis[v] == dis[s] + 1 && edge[i].f && (flow = dfs(v, t, min(min1, edge[i].f))))
+        {
+            edge[i].f -= flow ;
+            edge[i ^ 1].f += flow ;
+            ans += flow ;
+            min1 -= flow ;
+            if(!min1)
+                break;
+        }
+    }
+    if(ans)
+        return ans ;
+    dis[s] = -1 ;
+    return 0;
+}
+int getMaxFlow(int s, int e)
+{
+    int maxFlow = 0, flow;
+    while(bfs(s, e))
+    {
+        while((flow = dfs(s, e, inf)) > 0)
+            maxFlow += flow;
+    }
+    return maxFlow;
+}
+//
+//记录答案下标
+unordered_map<int, int>Index;
+//得到可能的运算答案的下标
+int get_Index(int x)
+{
+    if(!Index.count(x))
+        return Index[x] = ++n;
+    return Index[x];
+}
+//两个操作数
+int a[MAXN], b[MAXN];
+//根据符号得到运算答案
+int get_ans(int x, int y, int type)
+{
+    if(type == 0)
+        return x + y;
+    if(type == 1)
+        return x - y;
+    if(type == 2)
+        return x * y;
+    return x / y;
+}
+int main()
+{
+    scanf("%d", &n);
+    int n1 = n;
+    cnt = 0;
+    for(int i = 0, l = n * 5 + 1; i <= l; ++i)
+        head[i] = -1;
+        Index.clear();
+    for(int i = 1; i <= n1; ++i)
+    {
+        scanf("%d%d", &a[i], &b[i]);
+        add(i, get_Index(a[i] + b[i]), 1);
+        add(i, get_Index(a[i] - b[i]), 1);
+        add(i, get_Index(a[i] * b[i]), 1);
+        add(i, get_Index(a[i] / b[i]), 1);
+    }
+    st = 0;
+    ed = ++n;
+    for(int i = 1; i <= n1; ++i)
+        add(st, i, 1);
+    for(int i = n1 + 1; i < ed; ++i)
+        add(i, ed, 1);
+    if(getMaxFlow(st, ed) < n1)
+        puts("QAQ");
+    else
+    {
+    	puts("menhera");
+        char op[5] = "+-*/";
+        for(int i = 0, l = n1 * 8; i < l; i += 2)
+        {
+            if(edge[i].f == 0)
+            {
+                printf("%d%c%d=%d\n", a[i / 8 + 1], op[i / 2 % 4], b[i / 8 + 1], get_ans(a[i / 8 + 1], b[i / 8 + 1], i / 2 % 4));
+            }
+        }
+    }
+    return 0;
+}

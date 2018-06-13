@@ -1,0 +1,67 @@
+#include <bits/stdc++.h>
+#define LDQ 1000000007
+using namespace std;
+int a[30];
+long long dp[5001];
+int f(char s[])
+{
+    int i,ans,flag=0;
+    ans=0;
+    for(i=0;s[i]!='\0';i++)
+    {
+        if(s[i]=='.')
+        {
+            flag=1;
+            continue;
+        }
+        ans=ans*10+s[i]-'0';
+        if(flag!=0)
+        {
+            flag++;
+        }
+    }
+    if(flag==0)
+    {
+        ans=ans*10;
+    }
+    else if(flag>2)
+    {
+        ans=-1;
+    }
+    return ans;
+}
+int main()
+{
+    int n,m,i,i1,flag;
+    char s[100];
+    while(scanf("%s %d",s,&m)!=EOF)
+    {
+        flag=0;
+        n=f(s);
+        if(n==-1)
+        {
+            flag=1;
+        }
+        for(i=0;m>i;i++)
+        {
+            scanf("%s",s);
+            a[i]=f(s);
+        }
+        if(flag==1)
+        {
+            printf("0\n");
+            continue;
+        }
+        memset(dp,0,sizeof(dp));
+        dp[0]=1;
+        for(i=0;m>i;i++)
+        {
+            for(i1=a[i];n>=i1;i1++)
+            {
+                dp[i1]=(dp[i1]+dp[i1-a[i]])%LDQ;
+            }
+        }
+        printf("%lld\n",dp[n]);
+    }
+    return 0;
+}

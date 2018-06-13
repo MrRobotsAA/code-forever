@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int inf = 0x3f3f3f3f;
+int main()
+{
+
+    int p,q,r;
+    scanf("%d%d%d",&p,&q,&r);
+    printf("%d %d %d\n",p,q,r);
+    if(p<q&&q<r)
+    {
+        int a[10]= {2,3,1,2,3,1};
+        for(int i=1; i<=100; i++)
+        {
+            printf("%d\n",a[(i-1)%6]);
+
+        }
+    }
+    else if(p<r&&r<q)
+    {
+        int a[10]= {1,2,2,3,3,1};
+        for(int i=1; i<=100; i++)
+        {
+            printf("%d\n",a[(i-1)%6]);
+
+        }
+    }
+    else if(q<p&&p<r)
+    {
+        int a[10]= {2,3,3,1,1,2};
+        for(int i=1; i<=100; i++)
+        {
+            printf("%d\n",a[(i-1)%6]);
+
+        }
+    }
+    else if(r<p&&p<q)
+    {
+        int a[10]= {1,2,3,1,2,3};
+        for(int i=1; i<=100; i++)
+        {
+            printf("%d\n",a[(i-1)%6]);
+
+        }
+    }
+    else if(q<r&&r<p)
+    {
+        int a[10]= {3,1,2,3,1,2};
+        for(int i=1; i<=100; i++)
+        {
+            printf("%d\n",a[(i-1)%6]);
+
+        }
+    }
+    else
+    {
+        int a[10]= {3,1,1,2,2,3};
+        for(int i=1; i<=100; i++)
+        {
+            printf("%d\n",a[(i-1)%6]);
+
+        }
+    }
+
+    return 0;
+}
