@@ -1,0 +1,82 @@
+#include <bits/stdc++.h>
+const int Max = 1e5 + 5;
+using namespace std;
+int A[Max], color[Max];
+vector<int> edge[Max];
+struct node{
+    pair<int, int> A, B;
+}seg[Max];
+int Hash[Max];
+bool dfs(int u, int c){
+    color[u] = c;
+    for(int i = 0; i < (int)edge[u].size(); i++){
+        int v = edge[u][i];
+        if(color[v] == c)return false;
+        if(color[v] == 0 && !dfs(v, -c))return false;
+    }
+    return true;
+}
+bool isok(int mid, int segmin, int segmax, int n){
+    for(int i = 1; i < n; i++){
+        if(!((seg[i].A.second - segmin <= mid && segmax - seg[i].B.first <= mid) || (seg[i].B.second - segmin <= mid && segmax - seg[i].A.first <= mid)))return false;
+    }
+    return true;
+}
+int main() {
+    int n, m, segmin = (int)1e9, segmax = 0;
+    cin>>n;
+    for(int i = 1; i <= n; i++){
+        cin>>A[i];
+        segmin = min(segmin, A[i]);
+        segmax = max(segmax, A[i]);
+    }
+    cin>>m;
+    for(int i = 1; i <= m; i++){
+        int u, v;
+        cin>>u>>v;
+        edge[u].push_back(v);
+        edge[v].push_back(u);
+    }
+    bool ok = true;
+    for(int i = 1; i <= n; i++){
+        if(color[i])continue;
+        if(!dfs(i, i)){
+            ok = false;
+            break;
+        }
+    }
+    if(!ok)cout<<"impossible"<<endl;
+    else{
+        int idx = 1;
+        memset(Hash, -1, sizeof(Hash));
+        for(int i = 1; i <= n; i++){
+            int x = abs(color[i]);
+            if(Hash[x] == -1)Hash[x] = idx++;
+        }
+        for(int i = 1; i <= n; i++)seg[i].A = seg[i].B = make_pair(1e9, 0);
+        for(int i = 1; i <= n; i++){
+            int x = abs(color[i]);
+            if(color[i] < 0){
+                seg[Hash[x]].A.first = min(A[i], seg[Hash[x]].A.first);
+                seg[Hash[x]].A.second = max(A[i], seg[Hash[x]].A.second);
+            }else{
+                seg[Hash[x]].B.first = min(A[i], seg[Hash[x]].B.first);
+                seg[Hash[x]].B.second = max(A[i], seg[Hash[x]].B.second);
+            }
+        }
+        int l = 0, r;
+        r = segmax - segmin;
+        int ans = -1;
+        while(l <= r){
+            int mid = (l + r) >> 1;
+            if(isok(mid, segmin, segmax, idx)){
+                ans = mid;
+                r = mid - 1;
+            }else l = mid + 1;
+        }
+        if(ans == -1) while(1);
+        else
+        cout<<ans<<endl;
+    }
+    return 0;
+}

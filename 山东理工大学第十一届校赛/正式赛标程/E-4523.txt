@@ -1,0 +1,33 @@
+#include <stdio.h>
+#define print(n,st) printf("%d %s\n",n,st?"DOWN":"UP")
+
+void up(int n);
+void down(int n);
+
+int main()
+{
+    int n;
+    scanf("%d",&n);
+    down(n);
+    return 0;
+}
+
+void up(int n)
+{
+    if (n<=0) return ;
+    up(n-1);
+    down(n-2);
+    print(n,0);
+    up(n-2);
+  return ;
+}
+
+void down(int n)
+{
+    if(n<=0) return ;
+    down(n-2);
+    print(n,1);
+    up(n-2);
+    down(n-1);
+    return ;
+}

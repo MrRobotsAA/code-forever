@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int maxn = 100010;
+int cnt[maxn];
+bool vis[maxn];
+
+int bfs(int a, int b,int c,int d,int e)
+{
+    memset(vis, 0, sizeof(vis));
+    queue<int> q;
+    vis[a] = true;
+    cnt[a] = 0;
+    q.push(a);
+    int s,k;
+    while (!q.empty())
+    {
+        s = q.front();
+        q.pop();
+        if (s == b)
+            return cnt[b];
+        k=(s+c)%e;
+        if(k==0)
+          k=e;
+        if (!vis[k])
+        {
+            q.push(k);
+            vis[k] = true;
+            cnt[k] = cnt[s] + 1;
+        }
+        k = (s + d) % e;
+        if (k == 0)
+            k = e;
+        if ( !vis[k])
+        {
+            q.push(k);
+            vis[k] = true;
+            cnt[k] = cnt[s] + 1;
+        }
+    }
+    return -1;
+}
+
+int main()
+{
+    int t,n,m,a,b;
+    scanf("%d",&t);
+    while(t--)
+    {
+        scanf("%d %d",&n,&m);
+        scanf("%d %d",&a,&b);
+        int k=bfs(1,m,a,b,n);
+        if(k==-1)
+          printf("NO\n");
+        else
+          printf("YES\n%d\n",k);
+    }
+    return 0;
+}
+
+

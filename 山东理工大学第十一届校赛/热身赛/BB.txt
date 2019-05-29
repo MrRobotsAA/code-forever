@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+#define N 1000
+
+struct list
+{
+    char name[N];
+    int id;
+    int math;
+    int score;
+}exam[N];
+
+int main()
+{
+    int n,i,d;
+    scanf("%d",&n);
+    for(i=0;i<n;i++)
+    {
+        scanf("%s %d %d %d",&exam[i].name,&exam[i].id,&exam[i].math,&exam[i].score);
+    }
+    scanf("%d",&d);
+    for(i=0;i<n;i++)
+    {
+        if(exam[i].id==d)
+        {
+            printf("%s %d %d",exam[i].name,exam[i].math,exam[i].score);
+            break;
+        }
+    }
+    return 0;
+}
+
+

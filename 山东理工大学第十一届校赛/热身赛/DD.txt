@@ -1,0 +1,20 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+int main(void)
+{
+    ll x1, y1, x2, y2;
+    int T;
+    cin >> T;
+    while(T--) {
+        cin >> x1 >> y1 >> x2 >> y2;
+        ll tx = x1-x2, ty = y1-y2;
+        tx = abs(tx), ty = abs(ty);
+        ll ans = min(tx, ty)*2;
+        tx = max(tx, ty) - min(tx, ty);
+        if(tx%2 == 0) ans += tx*2;
+        else ans += (tx-1)*2 + 1;
+        cout << ans << '\n';
+    }
+    return 0;
+}

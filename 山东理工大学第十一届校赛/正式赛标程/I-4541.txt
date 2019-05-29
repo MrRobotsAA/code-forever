@@ -1,0 +1,73 @@
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 1e5+5;
+void show(int ans)
+{
+    if(ans) cout << "xzz" << '\n';
+    else cout << "xff" << '\n';
+}
+int a[N];
+int main(void)
+{
+    int n, x, y, T;
+    cin >> T;
+    while(T--)
+    {
+        cin >> n;
+        for(int i = 0; i < n; i++) cin >> a[i];
+        cin >> x >> y;
+        if(x == y)
+        {
+            int ans = 0;
+            for(int i = 0; i < n; i++)
+            {
+                ans ^= a[i]%(x+1);
+            }
+            show(ans);
+        }
+        else  // x!=y
+        {
+            int flag = 0, ans = 0;
+            for(int i = 0; i < n; i++)
+            {
+                ans ^= a[i];
+                if(a[i] > min(x, y))
+                {
+                    flag++;
+                }
+            }
+            if(!flag)  //a[i] <= min(x, y)
+            {
+                show(ans);
+            }
+            else  //exit a[i] > min(x, y)
+            {
+                if(x > y) cout << "xzz" << '\n';
+                else
+                {
+                    if(flag > 1) cout << "xff" << '\n';
+                    else
+                    {
+                        int t;
+                        for(int i = 0; i < n; i++)
+                        {
+                            if(a[i] > min(x, y))
+                            {
+                                t = a[i];
+                                ans ^= a[i];
+                                break;
+                            }
+                        }
+                        if(t - ans <= x && ans <= x) {
+                            cout << "xzz" << '\n';
+                        }
+                        else cout << "xff" << '\n';
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+

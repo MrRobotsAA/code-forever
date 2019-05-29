@@ -1,0 +1,89 @@
+#include <iostream>
+#define lson root<<1
+#define rson root<<1|1
+#define mid ((l+r)>>1)
+using namespace std;
+
+const int maxn=1e5+10;
+
+struct node
+{
+    int lazy;
+    long long data;
+}tree[maxn*4];
+
+long long a[maxn];
+
+long long Xh(long long x)
+{
+    long long y=0;
+    while(x)
+    {
+        y+=x%10;
+        x/=10;
+    }
+    return 3*y+1;
+}
+
+void pushup(int root)
+{
+    tree[root].lazy = tree[lson].lazy & tree[rson].lazy;
+    tree[root].data = tree[lson].data + tree[rson].data;
+    return ;
+}
+
+void build(int root, int l, int r)
+{
+    if(l==r)
+    {
+        tree[root].data=a[l];
+        if(tree[root].data==13) tree[root].lazy = 1;
+        else tree[root].lazy = 0;
+        return ;
+    }
+    build(lson,l,mid);
+    build(rson,mid+1,r);
+    pushup(root);
+    return ;
+}
+
+long long sum(int root, int l, int r, int x, int y)
+{
+    if (l>y || r<x) return 0ll;
+    if (l>=x && r<=y) return tree[root].data;
+    return sum(lson,l,mid,x,y) + sum(rson,mid+1,r,x,y);
+}
+
+void update(int root, int l, int r, int x, int y)
+{
+    if (l>y || r<x) return ;
+    if (l>=x && r<=y && tree[root].lazy) return ;
+    if (l==r)
+    {
+        tree[root].data = Xh(tree[root].data);
+        if (tree[root].data==13) tree[root].lazy = 1;
+        else tree[root].lazy = 0;
+        return ;
+    }
+    update(lson,l,mid,x,y);
+    update(rson,mid+1,r,x,y);
+    pushup(root);
+    return ;
+}
+
+int main()
+{
+    int n, m;
+    int op, l, r;
+    cin >> n;
+    for(int i=1; i<=n; i++) cin >> a[i];
+    build(1,1,n);
+    cin >> m;
+    while(m--)
+    {
+        cin >> op >> l >> r;
+        if (op==1) cout << sum(1,1,n,l,r) << endl;
+        else update(1,1,n,l,r);
+    }
+    return 0;
+}

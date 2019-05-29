@@ -1,0 +1,28 @@
+#include<cstdio>
+#include<iostream>
+using namespace std;
+
+int T[20];
+int y[10];
+int z[1000];
+
+int main ()
+{
+    int T;
+    scanf("%d",&T);
+    while(T--)
+    {
+    int x,y,z;
+    double a,b,s,pay;
+    scanf("%d%d%d",&x,&y,&z);
+
+        s=(x+y)/3.0;      //三人都做每人应做的天数
+        a=x-s;            //A多做的天数
+        b=y-s;            //B多做的天数  
+        pay=a/(a+b)*z;    //C应付给A的钱数
+        int k=pay+0.5;    //将钱数四舍五入得到整数
+        cout<<k<<endl;
+    }
+    return 0;
+
+}

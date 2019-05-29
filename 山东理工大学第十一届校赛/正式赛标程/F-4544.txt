@@ -1,0 +1,132 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+const int inf = 0x3f3f3f3f;
+ll extend_gcd(ll a, ll b, ll &x, ll &y)
+{
+    if(!b) {
+        x = 1, y = 0;
+        return a;
+    }
+    else {
+        int g = extend_gcd(b, a%b, y, x);
+        y -= x*(a/b);
+        return g;
+    }
+}
+int main(void)
+{
+    int T;
+    ll n, m, a, b;
+    scanf("%d", &T);
+    while(T--) {
+        scanf("%lld %lld", &n, &m);
+        scanf("%lld %lld", &a, &b);
+        if(n >= 1 && n <= 100000) {
+            if(a < 0 || a >= n || b < 0 || b >= n) while(1);
+            if(m < 1 || m > n) while(1);
+        }
+        else while(1);
+        if(m == 1) {
+            printf("YES\n");
+            printf("0\n");
+        }
+        else if(a == 0 && b == 0) {
+            printf("NO\n");
+        }
+        else if(a == 0 || b == 0) {
+            ll t = m-1, x, y;
+            ll g = extend_gcd(a, b, x, y);
+            ll ans = inf, ansx, ansy, ansz;
+            for(int i = 0; i <= a+b; i++) {
+                ll c = n*i+t;
+                if(c%g == 0) {
+                    ll x0 = x*(c/g);
+                    ll y0 = y*(c/g);
+                    if(a > b) { // y 接近 0
+                        ll k = -y0 / (a/g);
+                        y0 += k * (a/g);
+                        if(y0 < 0) {
+                            k++;
+                            y0 += (a/g);
+                        }
+                        x0 -= k*(b/g);
+                    }
+                    else { // x 接近 0
+                        ll k = -x0 / (b/g);
+                        x0 += k * (b/g);
+                        if(x0 < 0) {
+                            k++;
+                            x0 += (b/g);
+                        }
+                        y0 -= k*(a/g);
+                    }
+                    if(x0 >= 0 && y0 >= 0) {
+                        if(ans > x0+y0) {
+                            ans = x0+y0;
+                            ansx = x0, ansy = y0;
+                            ansz = i;
+                            //printf("%lld %lld %lld\n", x0, y0, ans);
+                        }
+                    }
+                }
+            }
+            if(ans == inf) {
+                printf("NO\n");
+            }
+            else {
+          //      printf("@%lld %lld %lld\n", ansx, ansy, ansz);
+                printf("YES\n");
+                printf("%lld\n", ans);
+            }
+        }
+        else {
+            ll t = m-1, x, y;
+            ll g = extend_gcd(a, b, x, y);
+            ll ans = inf, ansx, ansy, ansz;
+            for(int i = 0; i <= a+b; i++) {
+                ll c = n*i+t;
+                if(c%g == 0) {
+                    ll x0 = x*(c/g);
+                    ll y0 = y*(c/g);
+                    if(a > b) { // y 接近 0
+                        ll k = -y0 / (a/g);
+                        y0 += k * (a/g);
+                        if(y0 < 0) {
+                            k++;
+                            y0 += (a/g);
+                        }
+                        x0 -= k*(b/g);
+                    }
+                    else { // x 接近 0
+                        ll k = -x0 / (b/g);
+                        x0 += k * (b/g);
+                        if(x0 < 0) {
+                            k++;
+                            x0 += (b/g);
+                        }
+                        y0 -= k*(a/g);
+                    }
+                    if(x0 >= 0 && y0 >= 0) {
+                        if(ans > x0+y0) {
+                            ans = x0+y0;
+                            ansx = x0, ansy = y0;
+                            ansz = i;
+                            //printf("%lld %lld %lld\n", x0, y0, ans);
+                        }
+                    }
+                }
+            }
+            if(ans == inf) {
+                printf("NO\n");
+            }
+            else {
+          //      printf("@%lld %lld %lld\n", ansx, ansy, ansz);
+                printf("YES\n");
+                printf("%lld\n", ans);
+            }
+        }
+    }
+    return 0;
+}
+

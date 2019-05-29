@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define inf 0x3f3f3f
+int dp[3000], tx[3000], ty[3000];
+int main() {
+    int n, m;
+    cin>>n;
+    memset(dp, -inf, sizeof(dp));
+    dp[0] = 0;
+    for(int i = 1; i <= n; i++){
+        cin>>m;
+        for(int j = 1; j <= m; j++){
+            cin>>tx[j]>>ty[j];
+            for(int k = 200; k >= 0; k--)dp[k] = max(dp[k], dp[k + tx[j]] + ty[j]);
+        }
+        for(int j = 0; j <= 99; j++)dp[j + 100] = max(dp[j + 100], dp[j]);
+        for(int j = 1; j <= m; j++){
+            for(int k = 200; k >= 0; k--)dp[k] = max(dp[k], dp[k + tx[j]] + ty[j]);
+        }
+    }
+    int ans = 0;
+    for(int i = 0; i < 200; i++)ans = max(dp[i], ans);
+    cout<<ans<<endl;
+    return 0;
+}
+
